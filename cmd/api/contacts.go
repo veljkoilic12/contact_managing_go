@@ -8,6 +8,7 @@ import (
 	"salestrekker_technical_interview.veljkoilic/internal/validator"
 )
 
+// Handler for creating contact
 func (app *application) createContactHandler(w http.ResponseWriter, r *http.Request) {
 
 	var input struct {
@@ -60,11 +61,13 @@ func (app *application) listAllContactsHandler(w http.ResponseWriter, r *http.Re
 	}
 }
 
+// Handler for showing one contact based on ID provided by the client
 func (app *application) showContactHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := app.readIDParam(r)
 	if err != nil {
 		app.notFoundResponse(w, r)
+		return
 	}
 
 	contact, err := app.contactsModel.GetContact(id)
@@ -75,6 +78,7 @@ func (app *application) showContactHandler(w http.ResponseWriter, r *http.Reques
 		default:
 			app.serverErrorResponse(w, r, err)
 		}
+		return
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"contact": contact}, nil)
@@ -83,6 +87,7 @@ func (app *application) showContactHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
+// Delete contact based on the ID provided by the client
 func (app *application) deleteContactHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r)
 	if err != nil {
